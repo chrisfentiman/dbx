@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.3](https://github.com/chrisfentiman/dbx/compare/v0.2.2...v0.2.3) (2026-03-24)
+
+
+### Bug Fixes
+
+* **ci:** use dedicated token for release-please to trigger downstream workflows ([8aa91ef](https://github.com/chrisfentiman/dbx/commit/8aa91efd9c4fee291939c2bb1531b61c79f1f359))
+
 ## [0.2.2](https://github.com/chrisfentiman/dbx/compare/v0.2.1...v0.2.2) (2026-03-24)
 
 
