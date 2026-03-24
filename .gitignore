@@ -1,0 +1,25 @@
+# Workbench (local analysis, reports, data exports, n8n, docker, etc.)
+workbench/
+
+# Binary
+dbx-cli
+
+# Config (contains tokens/credentials)
+.mcp.json
+.env
+
+# Claude (project-specific, not distributable)
+.claude/agents/
+.claude/agent-memory/
+.claude/rules/*-project.md
+.claude/settings.local.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
