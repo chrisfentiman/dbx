@@ -21,22 +21,28 @@ dbx wraps the Databricks SQL API with a security-first approach: a two-layer SQL
 
 ## Install
 
-### Binary (recommended)
+### One-line install (recommended)
+
+```bash
+curl -sL https://raw.githubusercontent.com/chrisfentiman/dbx/main/install.sh | sh
+```
+
+### Manual download
 
 Download from [Releases](https://github.com/chrisfentiman/dbx/releases):
 
 ```bash
 # macOS (Apple Silicon)
 curl -L https://github.com/chrisfentiman/dbx/releases/latest/download/dbx-darwin-arm64.tar.gz | tar xz
-mv dbx-darwin-arm64 /usr/local/bin/dbx
+sudo mv dbx-darwin-arm64 /usr/local/bin/dbx
 
 # macOS (Intel)
 curl -L https://github.com/chrisfentiman/dbx/releases/latest/download/dbx-darwin-amd64.tar.gz | tar xz
-mv dbx-darwin-amd64 /usr/local/bin/dbx
+sudo mv dbx-darwin-amd64 /usr/local/bin/dbx
 
 # Linux (x86_64)
 curl -L https://github.com/chrisfentiman/dbx/releases/latest/download/dbx-linux-amd64.tar.gz | tar xz
-mv dbx-linux-amd64 /usr/local/bin/dbx
+sudo mv dbx-linux-amd64 /usr/local/bin/dbx
 ```
 
 ### From source
