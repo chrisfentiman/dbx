@@ -3,8 +3,8 @@ package cmd
 import (
 	"os"
 
-	"github.com/christopher-fentiman/dbx/internal/catalog"
-	"github.com/christopher-fentiman/dbx/internal/output"
+	"github.com/chrisfentiman/dbx/internal/catalog"
+	"github.com/chrisfentiman/dbx/internal/output"
 	"github.com/spf13/cobra"
 )
 

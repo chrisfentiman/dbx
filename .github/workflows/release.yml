@@ -68,7 +68,7 @@ jobs:
           CGO_ENABLED: "0"
         run: |
           VERSION="${{ needs.release-please.outputs.tag_name }}"
-          go build -ldflags="-s -w -X github.com/christopher-fentiman/dbx/cmd.Version=${VERSION#v}" -o ${{ matrix.target }} .
+          go build -ldflags="-s -w -X github.com/chrisfentiman/dbx/cmd.Version=${VERSION#v}" -o ${{ matrix.target }} .
           chmod +x ${{ matrix.target }}
 
       - name: Package

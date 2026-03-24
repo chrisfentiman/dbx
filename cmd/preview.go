@@ -5,10 +5,10 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/christopher-fentiman/dbx/internal/catalog"
-	"github.com/christopher-fentiman/dbx/internal/executor"
-	"github.com/christopher-fentiman/dbx/internal/guard"
-	"github.com/christopher-fentiman/dbx/internal/output"
+	"github.com/chrisfentiman/dbx/internal/catalog"
+	"github.com/chrisfentiman/dbx/internal/executor"
+	"github.com/chrisfentiman/dbx/internal/guard"
+	"github.com/chrisfentiman/dbx/internal/output"
 	"github.com/spf13/cobra"
 )
 

@@ -1,4 +1,4 @@
-module github.com/christopher-fentiman/dbx
+module github.com/chrisfentiman/dbx
 
 go 1.22
 

@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/christopher-fentiman/dbx/internal/catalog"
-	"github.com/christopher-fentiman/dbx/internal/client"
-	"github.com/christopher-fentiman/dbx/internal/config"
+	"github.com/chrisfentiman/dbx/internal/catalog"
+	"github.com/chrisfentiman/dbx/internal/client"
+	"github.com/chrisfentiman/dbx/internal/config"
 	"github.com/spf13/cobra"
 )
 

@@ -1,7 +1,7 @@
 package client
 
 import (
-	"github.com/christopher-fentiman/dbx/internal/config"
+	"github.com/chrisfentiman/dbx/internal/config"
 	"github.com/databricks/databricks-sdk-go"
 )
 

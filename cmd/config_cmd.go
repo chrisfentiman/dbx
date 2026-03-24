@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/christopher-fentiman/dbx/internal/client"
-	"github.com/christopher-fentiman/dbx/internal/config"
+	"github.com/chrisfentiman/dbx/internal/client"
+	"github.com/chrisfentiman/dbx/internal/config"
 	"github.com/spf13/cobra"
 )
 

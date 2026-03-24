@@ -2,7 +2,7 @@
 
 [![Go](https://img.shields.io/badge/Go-1.22+-00ADD8?logo=go&logoColor=white)](https://go.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![CI](https://github.com/christopher-fentiman/dbx/actions/workflows/ci.yml/badge.svg)](https://github.com/christopher-fentiman/dbx/actions/workflows/ci.yml)
+[![CI](https://github.com/chrisfentiman/dbx/actions/workflows/ci.yml/badge.svg)](https://github.com/chrisfentiman/dbx/actions/workflows/ci.yml)
 
 > Read-only Databricks SQL CLI for safe data exploration, with built-in [Claude Code](https://claude.ai/claude-code) integration.
 
@@ -23,26 +23,26 @@ dbx wraps the Databricks SQL API with a security-first approach: a two-layer SQL
 
 ### Binary (recommended)
 
-Download from [Releases](https://github.com/christopher-fentiman/dbx/releases):
+Download from [Releases](https://github.com/chrisfentiman/dbx/releases):
 
 ```bash
 # macOS (Apple Silicon)
-curl -L https://github.com/christopher-fentiman/dbx/releases/latest/download/dbx-darwin-arm64.tar.gz | tar xz
+curl -L https://github.com/chrisfentiman/dbx/releases/latest/download/dbx-darwin-arm64.tar.gz | tar xz
 mv dbx-darwin-arm64 /usr/local/bin/dbx
 
 # macOS (Intel)
-curl -L https://github.com/christopher-fentiman/dbx/releases/latest/download/dbx-darwin-amd64.tar.gz | tar xz
+curl -L https://github.com/chrisfentiman/dbx/releases/latest/download/dbx-darwin-amd64.tar.gz | tar xz
 mv dbx-darwin-amd64 /usr/local/bin/dbx
 
 # Linux (x86_64)
-curl -L https://github.com/christopher-fentiman/dbx/releases/latest/download/dbx-linux-amd64.tar.gz | tar xz
+curl -L https://github.com/chrisfentiman/dbx/releases/latest/download/dbx-linux-amd64.tar.gz | tar xz
 mv dbx-linux-amd64 /usr/local/bin/dbx
 ```
 
 ### From source
 
 ```bash
-git clone https://github.com/christopher-fentiman/dbx.git
+git clone https://github.com/chrisfentiman/dbx.git
 cd dbx
 make build
 mv dbx-cli /usr/local/bin/dbx
