@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/chrisfentiman/dbx/compare/v0.2.0...v0.2.1) (2026-03-24)
+
+
+### Bug Fixes
+
+* format Go source files and improve CI lint step ([3ee7a3a](https://github.com/chrisfentiman/dbx/commit/3ee7a3a6b7fbb5b3250022702ad9880b8dc6ac4e))
+
 ## [0.2.0](https://github.com/chrisfentiman/dbx/compare/v0.1.0...v0.2.0) (2026-03-24)
 
 
