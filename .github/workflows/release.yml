@@ -30,8 +30,7 @@ jobs:
         run: |
           gh pr merge ${{ fromJson(steps.release.outputs.pr).number }} \
             --repo ${{ github.repository }} \
-            --squash \
-            --auto
+            --squash
 
   build:
     needs: release-please
