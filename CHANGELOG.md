@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.3.0](https://github.com/chrisfentiman/dbx/compare/v0.2.3...v0.3.0) (2026-03-24)
+
+
+### Features
+
+* add install script for one-line installation ([4ab6217](https://github.com/chrisfentiman/dbx/commit/4ab6217cf0bd1719e6aecc5dd7313e7d4589182a))
+
+
+### Bug Fixes
+
+* **ci:** merge release PR immediately instead of auto-merge ([9ebf118](https://github.com/chrisfentiman/dbx/commit/9ebf118c9722c61d6f0ee5d35d8e308e39a8b9d7))
+* install to ~/.local/bin without sudo ([cb7de52](https://github.com/chrisfentiman/dbx/commit/cb7de52f3c775d318629ecfab3d0db6aa84837f7))
+
 ## [0.2.3](https://github.com/chrisfentiman/dbx/compare/v0.2.2...v0.2.3) (2026-03-24)
 
 
