@@ -34,9 +34,9 @@ var tablesCmd = &cobra.Command{
 		}
 
 		data := struct {
-			Command string             `json:"command"`
-			Catalog string             `json:"catalog"`
-			Schema  string             `json:"schema"`
+			Command string              `json:"command"`
+			Catalog string              `json:"catalog"`
+			Schema  string              `json:"schema"`
 			Tables  []catalog.TableInfo `json:"tables"`
 		}{Command: "tables", Catalog: catalogName, Schema: schemaName, Tables: tables}
 

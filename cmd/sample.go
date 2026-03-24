@@ -39,12 +39,12 @@ var sampleCmd = &cobra.Command{
 		}
 
 		data := struct {
-			Command  string              `json:"command"`
-			Table    string              `json:"table"`
-			SQL      string              `json:"sql"`
+			Command  string                `json:"command"`
+			Table    string                `json:"table"`
+			SQL      string                `json:"sql"`
 			Columns  []executor.ColumnMeta `json:"columns"`
-			Rows     [][]string          `json:"rows"`
-			RowCount int                 `json:"row_count"`
+			Rows     [][]string            `json:"rows"`
+			RowCount int                   `json:"row_count"`
 		}{
 			Command:  "sample",
 			Table:    tableName,

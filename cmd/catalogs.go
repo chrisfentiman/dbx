@@ -36,7 +36,7 @@ var catalogsCmd = &cobra.Command{
 		}
 
 		data := struct {
-			Command  string               `json:"command"`
+			Command  string                `json:"command"`
 			Catalogs []catalog.CatalogInfo `json:"catalogs"`
 		}{Command: "catalogs", Catalogs: cats}
 

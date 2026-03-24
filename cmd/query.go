@@ -38,11 +38,11 @@ var queryCmd = &cobra.Command{
 		}
 
 		data := struct {
-			Command  string              `json:"command"`
-			SQL      string              `json:"sql"`
+			Command  string                `json:"command"`
+			SQL      string                `json:"sql"`
 			Columns  []executor.ColumnMeta `json:"columns"`
-			Rows     [][]string          `json:"rows"`
-			RowCount int                 `json:"row_count"`
+			Rows     [][]string            `json:"rows"`
+			RowCount int                   `json:"row_count"`
 		}{
 			Command:  "query",
 			SQL:      sqlStr,

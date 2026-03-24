@@ -50,8 +50,8 @@ var schemasCmd = &cobra.Command{
 		}
 
 		data := struct {
-			Command string              `json:"command"`
-			Catalog string              `json:"catalog"`
+			Command string               `json:"command"`
+			Catalog string               `json:"catalog"`
 			Schemas []catalog.SchemaInfo `json:"schemas"`
 		}{Command: "schemas", Catalog: catalogName, Schemas: schemas}
 

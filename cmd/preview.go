@@ -42,10 +42,10 @@ var previewCmd = &cobra.Command{
 
 		if Format == "json" {
 			data := struct {
-				Command string              `json:"command"`
-				Table   string              `json:"table"`
-				Type    string              `json:"table_type"`
-				Comment string              `json:"comment,omitempty"`
+				Command string               `json:"command"`
+				Table   string               `json:"table"`
+				Type    string               `json:"table_type"`
+				Comment string               `json:"comment,omitempty"`
 				Columns []catalog.ColumnInfo `json:"columns"`
 				Sample  *executor.Result     `json:"sample,omitempty"`
 			}{
