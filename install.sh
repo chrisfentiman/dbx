@@ -2,7 +2,7 @@
 set -e
 
 REPO="chrisfentiman/dbx"
-INSTALL_DIR="/usr/local/bin"
+INSTALL_DIR="${HOME}/.local/bin"
 BINARY_NAME="dbx"
 
 # Detect platform
@@ -27,8 +27,17 @@ echo "Downloading ${TARGET}..."
 TMPDIR=$(mktemp -d)
 curl -sL "$URL" | tar xz -C "$TMPDIR"
 
-echo "Installing to ${INSTALL_DIR}/${BINARY_NAME}..."
-sudo mv "$TMPDIR/$TARGET" "$INSTALL_DIR/$BINARY_NAME"
+mkdir -p "$INSTALL_DIR"
+mv "$TMPDIR/$TARGET" "$INSTALL_DIR/$BINARY_NAME"
 rm -rf "$TMPDIR"
 
-echo "Done. Run 'dbx version' to verify."
+# Check if install dir is in PATH
+if ! echo "$PATH" | tr ':' '\n' | grep -qx "$INSTALL_DIR"; then
+  echo ""
+  echo "Add this to your shell profile:"
+  echo "  export PATH=\"$INSTALL_DIR:\$PATH\""
+  echo ""
+fi
+
+echo "Installed dbx to ${INSTALL_DIR}/${BINARY_NAME}"
+echo "Run 'dbx version' to verify."
