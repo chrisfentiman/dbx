@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.2](https://github.com/chrisfentiman/dbx/compare/v0.14.1...v0.14.2) (2026-03-25)
+
+
+### Bug Fixes
+
+* handle SELECT followed by newline in read-only prefix check ([f4ea3ca](https://github.com/chrisfentiman/dbx/commit/f4ea3ca8e453e390bc4643dfa09c986d777c6ac6))
+
 ## [0.14.1](https://github.com/chrisfentiman/dbx/compare/v0.14.0...v0.14.1) (2026-03-25)
 
 
