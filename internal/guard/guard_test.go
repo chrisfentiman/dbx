@@ -109,6 +109,31 @@ func TestGuard_ParseFailure_AllowReadOnly(t *testing.T) {
 	}
 }
 
+func TestGuard_SQLComments(t *testing.T) {
+	g := New([]string{"test_schema"}, "hive_metastore")
+
+	allowed := []struct {
+		name string
+		sql  string
+	}{
+		{"leading comment", "-- This is a comment\nSELECT * FROM test_schema.t1"},
+		{"multiple comments", "-- Comment 1\n-- Comment 2\nSELECT * FROM test_schema.t1"},
+		{"inline after select", "SELECT * FROM test_schema.t1 -- trailing comment"},
+		{"block comment before", "/* QTD report */ SELECT * FROM test_schema.t1"},
+		{"block comment inline", "SELECT /* columns */ * FROM test_schema.t1"},
+		{"mixed comments", "/* header */\n-- line comment\nSELECT * FROM test_schema.t1"},
+	}
+
+	for _, tc := range allowed {
+		t.Run(tc.name, func(t *testing.T) {
+			result := g.Validate(tc.sql)
+			if !result.Allowed {
+				t.Errorf("expected ALLOWED for %q, got blocked: %s", tc.sql, result.Reason)
+			}
+		})
+	}
+}
+
 func TestGuard_NoSchemaRestriction(t *testing.T) {
 	g := New(nil, "hive_metastore") // empty allowed schemas = no restriction
 	result := g.Validate("SELECT * FROM any_schema.any_table")

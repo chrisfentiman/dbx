@@ -33,8 +33,9 @@ func New(allowedSchemas []string, defaultCatalog string) *Guard {
 }
 
 func (g *Guard) Validate(sql string) ValidationResult {
-	// Layer 1: Keyword scan
-	upper := strings.ToUpper(strings.TrimSpace(sql))
+	// Layer 1: Keyword scan (strip comments for prefix detection)
+	cleaned := stripSQLComments(sql)
+	upper := strings.ToUpper(strings.TrimSpace(cleaned))
 	for _, kw := range DeniedKeywords {
 		if containsKeyword(upper, kw) {
 			return ValidationResult{Allowed: false, Reason: fmt.Sprintf("prohibited keyword: %s", kw)}
@@ -112,6 +113,35 @@ func (g *Guard) isSchemaAllowed(tableRef string) bool {
 	default:
 		return false
 	}
+}
+
+func stripSQLComments(sql string) string {
+	// Strip block comments /* ... */
+	for {
+		start := strings.Index(sql, "/*")
+		if start == -1 {
+			break
+		}
+		end := strings.Index(sql[start+2:], "*/")
+		if end == -1 {
+			break
+		}
+		sql = sql[:start] + sql[start+2+end+2:]
+	}
+
+	// Strip line comments -- ...
+	lines := strings.Split(sql, "\n")
+	var result []string
+	for _, line := range lines {
+		if idx := strings.Index(line, "--"); idx >= 0 {
+			line = line[:idx]
+		}
+		trimmed := strings.TrimSpace(line)
+		if trimmed != "" {
+			result = append(result, line)
+		}
+	}
+	return strings.Join(result, "\n")
 }
 
 var readOnlyPrefixes = []string{
