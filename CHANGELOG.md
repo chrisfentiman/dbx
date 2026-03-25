@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.0](https://github.com/chrisfentiman/dbx/compare/v0.8.0...v0.9.0) (2026-03-25)
+
+
+### Features
+
+* check for uv during dbx up, add uv script patterns to CLAUDE.md ([52641a5](https://github.com/chrisfentiman/dbx/commit/52641a5934498c8da06a2006a88bc55b4ed5452b))
+
 ## [0.8.0](https://github.com/chrisfentiman/dbx/compare/v0.7.0...v0.8.0) (2026-03-25)
 
 
