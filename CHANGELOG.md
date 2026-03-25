@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.3](https://github.com/chrisfentiman/dbx/compare/v0.11.2...v0.11.3) (2026-03-25)
+
+
+### Bug Fixes
+
+* trigger release for updated README and CLI help output ([131d081](https://github.com/chrisfentiman/dbx/commit/131d081ab4de6275fd41cd6be6ef8de491ff6018))
+
 ## [0.11.2](https://github.com/chrisfentiman/dbx/compare/v0.11.1...v0.11.2) (2026-03-25)
 
 
