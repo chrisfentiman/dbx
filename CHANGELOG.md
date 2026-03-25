@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.2](https://github.com/chrisfentiman/dbx/compare/v0.11.1...v0.11.2) (2026-03-25)
+
+
+### Bug Fixes
+
+* simplify dbx up to diff-based writes, remove force flag ([e87aa06](https://github.com/chrisfentiman/dbx/commit/e87aa0636bb82ad0f9df12bd5f7dc9ac1c28f569))
+
 ## [0.11.1](https://github.com/chrisfentiman/dbx/compare/v0.11.0...v0.11.1) (2026-03-25)
 
 
