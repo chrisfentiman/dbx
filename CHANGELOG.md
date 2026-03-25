@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/chrisfentiman/dbx/compare/v0.3.0...v0.4.0) (2026-03-25)
+
+
+### Features
+
+* add doctor command, query from file, and output to file ([ca2a2bc](https://github.com/chrisfentiman/dbx/commit/ca2a2bc1408b501e61d4c00d0d7d8a9f9138ec74))
+
 ## [0.3.0](https://github.com/chrisfentiman/dbx/compare/v0.2.3...v0.3.0) (2026-03-24)
 
 
