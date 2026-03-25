@@ -8,56 +8,101 @@ argument-hint: "[catalog or schema or table name]"
 
 # Databricks Schema Explorer
 
-Explore the Databricks Unity Catalog to discover and understand available data.
+Systematically explore Databricks to discover and understand available data.
 
 ## Target
 
 $ARGUMENTS
 
+## Constraints
+
+- Check memory first — do not rediscover schemas already documented
+- Always describe tables before making assumptions about columns
+- Save all discoveries to memory after exploring
+
 ## Exploration Protocol
 
-### Step 1: Discover Available Schemas
-If no specific table is mentioned, start broad:
+### 1. Check Memory
+Before exploring, check if this schema or table has been previously documented in memory files. If already known, summarize from memory instead of re-running commands.
+
+### 2. Discover Structure
+Start broad, then drill down:
 ```bash
-dbx catalogs
-```
-Then drill into a catalog:
-```bash
-dbx schemas <catalog>
+dbx catalogs                        # What catalogs exist?
+dbx schemas <catalog>               # What schemas are available?
+dbx tables <catalog>.<schema>       # What tables are in this schema?
 ```
 
-### Step 2: Find Relevant Tables
-Once you know the schema:
-```bash
-dbx tables <catalog>.<schema>
-```
-
-### Step 3: Understand Table Structure
-For each relevant table:
+### 3. Describe Tables
+For each relevant table, get the full column definition:
 ```bash
 dbx describe <catalog>.<schema>.<table>
 ```
+Note: column names, data types, NULL constraints.
 
-### Step 4: Preview Data
-Get a small sample to understand the data:
+### 4. Sample Data
+Preview actual data to understand content and quality:
 ```bash
-dbx sample <catalog>.<schema>.<table> --limit 5 --format table
+dbx sample <catalog>.<schema>.<table>
 ```
+Look at 5-10 rows. Check for: NULL patterns, date formats, ID formats, unexpected values.
+
+### 5. Identify Relationships
+After describing 2-3 tables, reason about joins:
+- Do any ID columns appear in multiple tables?
+- Are there naming conventions? (e.g., `table_id` pattern)
+- What is the likely cardinality? (one-to-many, many-to-one)
+
+### 6. Save to Memory
+Update memory files with:
+- Schema inventory (tables, row counts, key columns)
+- Verified join paths with cardinality
+- Column details for important tables
+- Any data model quirks or edge cases
+
+## Example: Exploring a New Schema
+
+**User**: "What's in the analytics schema?"
+
+**Step 1**: Check memory — analytics not previously explored.
+
+**Step 2**: List tables:
+```
+dbx tables main.analytics
+→ customers, orders, products, reviews, shipments
+```
+
+**Step 3**: Describe key tables:
+```
+dbx describe main.analytics.customers
+→ customer_id (INT), email (VARCHAR), created_date (DATE)
+
+dbx describe main.analytics.orders
+→ order_id (INT), customer_id (INT), order_date (DATE), amount (DECIMAL)
+```
+
+**Step 4**: Sample to verify:
+```
+dbx sample main.analytics.customers
+→ Real data, no NULLs in customer_id, email looks valid
+```
+
+**Step 5**: Identify joins:
+- `orders.customer_id` → `customers.customer_id` (many-to-one)
+
+**Step 6**: Save to memory — schema inventory, join path, column details.
 
 ## Output Format
 
-Summarize findings as:
-
 ### Available Data
-- List of relevant catalogs/schemas discovered
+List of catalogs/schemas discovered
 
 ### Table Inventory
-For each relevant table:
-| Table | Description | Key Columns | Row Sample |
-|-------|------------|-------------|------------|
+| Table | Key Columns | Notes |
+|-------|------------|-------|
 
 ### Relationships
-Note any foreign key patterns or join opportunities between tables (matching column names, ID references, etc.).
+Documented join paths with cardinality
 
 ### Recommendations
-Suggest which tables are most relevant to the user's question and why.
+Which tables are most relevant to the user's question and why

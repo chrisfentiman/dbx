@@ -15,22 +15,30 @@ Generate a reproducible data report answering a specific question.
 
 $ARGUMENTS
 
+## Constraints
+
+- Check memory for relevant schema knowledge before planning queries
+- Verify table structure with `dbx describe` before writing SQL
+- Capture exact SQL for every query (reproducibility is the goal)
+- Save report to `workbench/` not `docs/reports/`
+
 ## Report Protocol
 
-### Step 1: Plan Queries
-Determine what queries are needed to answer the question. List them before executing.
+### Step 1: Plan
+Reason through what questions need answering and what data is needed. List the queries you'll run and why, before executing any of them.
 
 ### Step 2: Execute and Capture
 Run each query, capturing both the SQL and results:
 ```bash
 dbx query "<sql>" --format json
 ```
+For large result sets, use `dbx query "<sql>" --format csv -o workbench/report-data.csv`
 
 ### Step 3: Analyze
-Interpret each result set and build the narrative.
+Interpret each result set. Look for patterns, anomalies, and follow-up questions.
 
 ### Step 4: Write Report
-Write a markdown report to docs/reports/ with this structure:
+Write a markdown report to workbench/ with this structure:
 
 # Report: <Title>
 **Generated**: <date>
@@ -60,4 +68,4 @@ Step-by-step instructions for the user to run these queries themselves:
 2. Run each query above in sequence
 3. Expected data freshness: results may vary if underlying data has been updated
 
-Save the report to: docs/reports/<topic-slug>-<date>.md
+Save the report to: workbench/<topic-slug>-<date>.md
