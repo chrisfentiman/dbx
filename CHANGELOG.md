@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.0](https://github.com/chrisfentiman/dbx/compare/v0.11.3...v0.12.0) (2026-03-25)
+
+
+### Features
+
+* auto-configure CLI permissions with allow/deny lists in dbx up ([2fa3dce](https://github.com/chrisfentiman/dbx/commit/2fa3dcefcd3ae6d2a2fb3deadd0d0499ea00a359))
+
 ## [0.11.3](https://github.com/chrisfentiman/dbx/compare/v0.11.2...v0.11.3) (2026-03-25)
 
 
