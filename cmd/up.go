@@ -207,8 +207,19 @@ func ensurePermissions() {
 
 	settings := readSettings(settingsPath)
 
-	// Allowed: data exploration and analysis commands
+	// Allowed: data exploration, analysis, and skills
 	requiredAllow := []string{
+		"Skill(dbx-query)",
+		"Skill(dbx-query:*)",
+		"Skill(dbx-explore)",
+		"Skill(dbx-explore:*)",
+		"Skill(dbx-analyze)",
+		"Skill(dbx-analyze:*)",
+		"Skill(dbx-report)",
+		"Skill(dbx-report:*)",
+		"Skill(dbx-config)",
+		"Skill(dbx-config:*)",
+		"WebSearch",
 		"Bash(dbx query:*)",
 		"Bash(dbx query *)",
 		"Bash(dbx describe:*)",
@@ -312,6 +323,7 @@ func ensurePermissions() {
 	perms["allow"] = allow
 	perms["deny"] = deny
 	settings["permissions"] = perms
+	settings["enableAllProjectMcpServers"] = true
 	writeSettings(settingsPath, settings)
 	fmt.Println("  ✓ CLI permissions configured in .claude/settings.local.json")
 }
