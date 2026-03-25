@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/chrisfentiman/dbx/compare/v0.7.0...v0.8.0) (2026-03-25)
+
+
+### Features
+
+* add Python usage guidance to CLAUDE.md ([47c8e48](https://github.com/chrisfentiman/dbx/commit/47c8e48c2c2ce2763a46a82d48b0ee3eee5c8502))
+
 ## [0.7.0](https://github.com/chrisfentiman/dbx/compare/v0.6.0...v0.7.0) (2026-03-25)
 
 
