@@ -16,8 +16,6 @@ import (
 // ScaffoldFS is set by main.go to the embedded filesystem.
 var ScaffoldFS fs.FS
 
-var forceOverwrite bool
-
 var upCmd = &cobra.Command{
 	Use:   "up",
 	Short: "Scaffold the current directory with dbx skills, rules, and CLAUDE.md",
@@ -32,10 +30,9 @@ Creates:
 Behavior:
   - Skills (dbx-*) are always written (these are managed by dbx)
   - Rules are inserted only if they don't already exist
-  - CLAUDE.md is skipped if it exists (use --force to overwrite)
-  - .env.example is skipped if it exists
+  - Files are only written if content has changed
   - Never deletes existing files
-  - Checks for uv (Python package manager) and offers to install it`,
+  - Checks for uv and pyright, offers to install if missing`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if ScaffoldFS == nil {
 			return fmt.Errorf("scaffold files not available")
@@ -53,30 +50,15 @@ Behavior:
 				return os.MkdirAll(path, 0755)
 			}
 
-			action := classifyFile(path)
-
-			switch action {
-			case writeAlways:
-				// dbx skills — always overwrite
-			case writeIfMissing:
-				// rules, .env.example — skip if exists
-				if fileExists(path) {
-					fmt.Printf("  skip  %s (already exists)\n", path)
-					skipped++
-					return nil
-				}
-			case writeIfForced:
-				// CLAUDE.md — skip unless --force
-				if fileExists(path) && !forceOverwrite {
-					fmt.Printf("  skip  %s (use --force to overwrite)\n", path)
-					skipped++
-					return nil
-				}
-			}
-
 			data, err := fs.ReadFile(ScaffoldFS, path)
 			if err != nil {
 				return fmt.Errorf("reading embedded %s: %w", path, err)
+			}
+
+			// Skip if file exists and content is identical
+			if fileExists(path) && !contentChanged(path, data) {
+				skipped++
+				return nil
 			}
 
 			dir := filepath.Dir(path)
@@ -241,35 +223,19 @@ func ensureLSPConfig() {
 	fmt.Println("  ✓ LSP config written to .claude/settings.local.json")
 }
 
-type fileAction int
-
-const (
-	writeAlways fileAction = iota
-	writeIfMissing
-	writeIfForced
-)
-
-func classifyFile(path string) fileAction {
-	// dbx skills — always overwrite (managed by dbx)
-	if matched, _ := filepath.Match(".claude/skills/dbx-*/*", path); matched {
-		return writeAlways
-	}
-
-	// CLAUDE.md — only with --force
-	if path == "CLAUDE.md" {
-		return writeIfForced
-	}
-
-	// Everything else (rules, .env.example, non-dbx skills) — insert only
-	return writeIfMissing
-}
-
 func fileExists(path string) bool {
 	_, err := os.Stat(path)
 	return err == nil
 }
 
+func contentChanged(path string, newData []byte) bool {
+	existing, err := os.ReadFile(path)
+	if err != nil {
+		return true // can't read = treat as changed
+	}
+	return string(existing) != string(newData)
+}
+
 func init() {
-	upCmd.Flags().BoolVar(&forceOverwrite, "force", false, "overwrite CLAUDE.md if it already exists")
 	rootCmd.AddCommand(upCmd)
 }
