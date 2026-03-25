@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"io/fs"
 	"os"
@@ -103,6 +104,9 @@ Behavior:
 		// Check for Python data analysis dependencies
 		checkPythonDeps()
 
+		// Check for Python LSP
+		checkPythonLSP()
+
 		if !fileExists(".env") {
 			fmt.Println("\nNext steps:")
 			fmt.Println("  1. cp .env.example .env")
@@ -151,6 +155,90 @@ func checkPythonDeps() {
 	} else {
 		fmt.Println("  Skipped. Install later: curl -LsSf https://astral.sh/uv/install.sh | sh")
 	}
+}
+
+func checkPythonLSP() {
+	// Check if pyright-langserver is installed
+	if _, err := exec.LookPath("pyright-langserver"); err == nil {
+		fmt.Println("✓ pyright detected — Python LSP diagnostics available")
+		ensureLSPConfig()
+		return
+	}
+
+	// Check if npm/node is available for installation
+	if _, err := exec.LookPath("npm"); err != nil {
+		fmt.Println("⊘ pyright not found (npm not available — install Node.js first)")
+		return
+	}
+
+	fmt.Println("⚠ pyright not found")
+	fmt.Println("  pyright provides Python type checking and diagnostics for Claude Code.")
+	fmt.Print("\n  Install pyright now? [Y/n] ")
+
+	reader := bufio.NewReader(os.Stdin)
+	answer, _ := reader.ReadString('\n')
+	answer = strings.TrimSpace(strings.ToLower(answer))
+
+	if answer == "" || answer == "y" || answer == "yes" {
+		fmt.Println("  Installing pyright...")
+		installCmd := exec.Command("npm", "install", "-g", "pyright")
+		installCmd.Stdout = os.Stdout
+		installCmd.Stderr = os.Stderr
+		if err := installCmd.Run(); err != nil {
+			fmt.Printf("  ✗ Failed to install pyright: %v\n", err)
+			fmt.Println("  Install manually: npm install -g pyright")
+		} else {
+			fmt.Println("  ✓ pyright installed")
+			ensureLSPConfig()
+		}
+	} else {
+		fmt.Println("  Skipped. Install later: npm install -g pyright")
+	}
+}
+
+func ensureLSPConfig() {
+	settingsPath := ".claude/settings.local.json"
+
+	// Read existing settings or start fresh
+	var settings map[string]interface{}
+	if data, err := os.ReadFile(settingsPath); err == nil {
+		if err := json.Unmarshal(data, &settings); err != nil {
+			settings = make(map[string]interface{})
+		}
+	} else {
+		settings = make(map[string]interface{})
+	}
+
+	// Check if LSP is already configured
+	if _, exists := settings["lspServers"]; exists {
+		return
+	}
+
+	// Add LSP config and ENABLE_LSP_TOOL env var
+	settings["lspServers"] = map[string]interface{}{
+		"python": map[string]interface{}{
+			"command":   "pyright-langserver",
+			"args":      []string{"--stdio"},
+			"transport": "stdio",
+			"extensionToLanguage": map[string]string{
+				"py": "python",
+			},
+		},
+	}
+
+	// Add env var to enable LSP tool
+	env, ok := settings["env"].(map[string]interface{})
+	if !ok {
+		env = make(map[string]interface{})
+	}
+	env["ENABLE_LSP_TOOL"] = "1"
+	settings["env"] = env
+
+	// Write back
+	os.MkdirAll(".claude", 0755)
+	data, _ := json.MarshalIndent(settings, "", "  ")
+	os.WriteFile(settingsPath, append(data, '\n'), 0644)
+	fmt.Println("  ✓ LSP config written to .claude/settings.local.json")
 }
 
 type fileAction int
