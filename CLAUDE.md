@@ -29,6 +29,37 @@ dbx doctor                             # Check config, connectivity, integrity
 
 Output formats: `--format json|csv|table` | Limit rows: `--limit N`
 
+## When to Use Python
+
+Use Python for work that SQL can't do or shouldn't do:
+- **Post-processing**: pivoting, scoring models, statistical tests, complex transformations on query results
+- **Validation**: cross-checking counts, verifying join correctness, comparing datasets
+- **Visualization**: charts, histograms, geographic plots
+- **File manipulation**: merging CSVs, reformatting output, building reports from multiple queries
+
+### Python Rules
+- **Do not assume any packages are installed** — check with `pip3 list` or install inline with `pip3 install`
+- **Use stdlib first** — `csv`, `json`, `collections`, `statistics` cover most needs without dependencies
+- **Read query output via CSV**: `dbx query "SELECT ..." --format csv -o /tmp/data.csv` then process in Python
+- **Keep scripts in workbench/** — not in the project root
+- **Prefer inline Python** (`python3 -c` or heredoc) for quick one-offs; write a `.py` file for anything over ~30 lines
+
+### Common Pattern
+```bash
+# 1. Query data out
+dbx query "SELECT ..." --format csv -o /tmp/results.csv
+
+# 2. Process in Python
+python3 << 'EOF'
+import csv
+from collections import defaultdict
+
+with open('/tmp/results.csv') as f:
+    reader = csv.DictReader(f)
+    # ... analysis ...
+EOF
+```
+
 ## Constraints
 
 - **Read-only enforced**: The CLI blocks all DML/DDL (INSERT, UPDATE, DELETE, DROP, CREATE, ALTER)
