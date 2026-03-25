@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.1](https://github.com/chrisfentiman/dbx/compare/v0.11.0...v0.11.1) (2026-03-25)
+
+
+### Bug Fixes
+
+* **ci:** trigger CI on embedded file changes (CLAUDE.md, skills, rules) ([20a5a91](https://github.com/chrisfentiman/dbx/commit/20a5a9155810f01a80fcafe63ee04323446bea46))
+
 ## [0.11.0](https://github.com/chrisfentiman/dbx/compare/v0.10.0...v0.11.0) (2026-03-25)
 
 
