@@ -145,13 +145,20 @@ func stripSQLComments(sql string) string {
 }
 
 var readOnlyPrefixes = []string{
-	"SELECT ", "WITH ", "SHOW ", "DESCRIBE ", "DESC ", "EXPLAIN ",
+	"SELECT", "WITH", "SHOW", "DESCRIBE", "DESC", "EXPLAIN",
 }
 
 func isReadOnlyPrefix(upper string) bool {
 	for _, prefix := range readOnlyPrefixes {
 		if strings.HasPrefix(upper, prefix) {
-			return true
+			// Ensure it's a word boundary (followed by space, newline, tab, or end)
+			if len(upper) == len(prefix) {
+				return true
+			}
+			next := upper[len(prefix)]
+			if next == ' ' || next == '\n' || next == '\t' || next == '\r' || next == '(' {
+				return true
+			}
 		}
 	}
 	return false
