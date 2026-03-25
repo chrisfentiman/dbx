@@ -233,7 +233,7 @@ func ensurePermissions() {
 		"Bash(pip3 install:*)",
 	}
 
-	// Denied: configuration and system commands the LLM should not run
+	// Denied: configuration, system commands, and destructive operations
 	requiredDeny := []string{
 		"Bash(dbx config:*)",
 		"Bash(dbx config *)",
@@ -245,6 +245,12 @@ func ensurePermissions() {
 		"Bash(dbx update:*)",
 		"Bash(dbx update *)",
 		"Bash(dbx update)",
+		"Bash(rm -rf:*)",
+		"Bash(rm -rf *)",
+		"Bash(rm -r:*)",
+		"Bash(rm -r *)",
+		"Bash(rmdir:*)",
+		"Bash(rmdir *)",
 	}
 
 	// Get existing permissions
