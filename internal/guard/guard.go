@@ -45,8 +45,11 @@ func (g *Guard) Validate(sql string) ValidationResult {
 	stmt, err := sqlparser.Parse(sql)
 	if err != nil {
 		// Parser doesn't understand Databricks-specific syntax.
-		// Layer 1 already passed, so allow with warning.
-		return ValidationResult{Allowed: true, Reason: "keyword-check only (parse failed)"}
+		// Allow only if the query starts with a known read-only command.
+		if isReadOnlyPrefix(upper) {
+			return ValidationResult{Allowed: true, Reason: "keyword-check only (Databricks-specific syntax)"}
+		}
+		return ValidationResult{Allowed: false, Reason: "unable to parse query; ensure it is a SELECT, SHOW, or DESCRIBE statement"}
 	}
 
 	// Verify statement type
@@ -109,6 +112,19 @@ func (g *Guard) isSchemaAllowed(tableRef string) bool {
 	default:
 		return false
 	}
+}
+
+var readOnlyPrefixes = []string{
+	"SELECT ", "WITH ", "SHOW ", "DESCRIBE ", "DESC ", "EXPLAIN ",
+}
+
+func isReadOnlyPrefix(upper string) bool {
+	for _, prefix := range readOnlyPrefixes {
+		if strings.HasPrefix(upper, prefix) {
+			return true
+		}
+	}
+	return false
 }
 
 func containsKeyword(upper, kw string) bool {

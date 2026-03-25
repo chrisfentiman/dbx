@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -49,6 +51,20 @@ func isNewer(latest, current string) bool {
 	return latest != current
 }
 
+func downloadFile(url string) ([]byte, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("HTTP %d", resp.StatusCode)
+	}
+
+	return io.ReadAll(resp.Body)
+}
+
 var updateCmd = &cobra.Command{
 	Use:   "update",
 	Short: "Update dbx to the latest version",
@@ -71,28 +87,39 @@ var updateCmd = &cobra.Command{
 		goos := runtime.GOOS
 		goarch := runtime.GOARCH
 		target := fmt.Sprintf("dbx-%s-%s", goos, goarch)
-		url := fmt.Sprintf("https://github.com/%s/%s/releases/latest/download/%s.tar.gz", repoOwner, repoName, target)
+		baseURL := fmt.Sprintf("https://github.com/%s/%s/releases/latest/download", repoOwner, repoName)
 
-		// Download to temp dir
+		// Download tarball
 		fmt.Printf("Downloading %s...\n", target)
-		resp, err := http.Get(url)
+		tarball, err := downloadFile(fmt.Sprintf("%s/%s.tar.gz", baseURL, target))
 		if err != nil {
 			return fmt.Errorf("downloading: %w", err)
 		}
-		defer resp.Body.Close()
 
-		if resp.StatusCode != 200 {
-			return fmt.Errorf("download failed: HTTP %d", resp.StatusCode)
+		// Download and verify checksum
+		fmt.Print("Verifying checksum... ")
+		checksumData, err := downloadFile(fmt.Sprintf("%s/%s.tar.gz.sha256", baseURL, target))
+		if err != nil {
+			return fmt.Errorf("downloading checksum: %w", err)
 		}
 
+		expectedHash := strings.Fields(string(checksumData))[0]
+		actualHash := sha256sum(tarball)
+
+		if actualHash != expectedHash {
+			return fmt.Errorf("checksum mismatch: expected %s, got %s", expectedHash, actualHash)
+		}
+		fmt.Println("✓")
+
+		// Write tarball to temp file for extraction
 		tmpFile, err := os.CreateTemp("", "dbx-update-*.tar.gz")
 		if err != nil {
 			return fmt.Errorf("creating temp file: %w", err)
 		}
 		defer os.Remove(tmpFile.Name())
 
-		if _, err := io.Copy(tmpFile, resp.Body); err != nil {
-			return fmt.Errorf("saving download: %w", err)
+		if _, err := tmpFile.Write(tarball); err != nil {
+			return fmt.Errorf("writing temp file: %w", err)
 		}
 		tmpFile.Close()
 
@@ -130,6 +157,11 @@ var updateCmd = &cobra.Command{
 		fmt.Printf("Updated to %s\n", latest)
 		return nil
 	},
+}
+
+func sha256sum(data []byte) string {
+	h := sha256.Sum256(data)
+	return hex.EncodeToString(h[:])
 }
 
 func init() {

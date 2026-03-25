@@ -62,6 +62,53 @@ func TestGuard_BlockedQueries(t *testing.T) {
 	}
 }
 
+func TestGuard_ParseFailure_DenyByDefault(t *testing.T) {
+	g := New([]string{"test_schema"}, "hive_metastore")
+
+	// Databricks-specific syntax that the MySQL parser can't handle
+	blocked := []struct {
+		name string
+		sql  string
+	}{
+		{"unparseable garbage", "FOOBAR BAZQUX test_schema.t1"},
+		{"set variable", "SET spark.sql.shuffle.partitions = 200"},
+		{"optimize", "OPTIMIZE test_schema.t1"},
+	}
+
+	for _, tc := range blocked {
+		t.Run(tc.name, func(t *testing.T) {
+			result := g.Validate(tc.sql)
+			if result.Allowed {
+				t.Errorf("expected BLOCKED for unparseable %q, but was allowed", tc.sql)
+			}
+		})
+	}
+}
+
+func TestGuard_ParseFailure_AllowReadOnly(t *testing.T) {
+	g := New([]string{"test_schema"}, "hive_metastore")
+
+	// Databricks-specific read-only queries that the parser can't handle
+	// but start with known read-only prefixes
+	allowed := []struct {
+		name string
+		sql  string
+	}{
+		{"describe history", "DESCRIBE HISTORY test_schema.t1"},
+		{"show tables", "SHOW TABLES IN test_schema"},
+		{"select with lateral", "SELECT * FROM test_schema.t1 LATERAL VIEW EXPLODE(arr) t AS val"},
+	}
+
+	for _, tc := range allowed {
+		t.Run(tc.name, func(t *testing.T) {
+			result := g.Validate(tc.sql)
+			if !result.Allowed {
+				t.Errorf("expected ALLOWED for read-only %q, got blocked: %s", tc.sql, result.Reason)
+			}
+		})
+	}
+}
+
 func TestGuard_NoSchemaRestriction(t *testing.T) {
 	g := New(nil, "hive_metastore") // empty allowed schemas = no restriction
 	result := g.Validate("SELECT * FROM any_schema.any_table")
