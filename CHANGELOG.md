@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.1](https://github.com/chrisfentiman/dbx/compare/v0.12.0...v0.12.1) (2026-03-25)
+
+
+### Bug Fixes
+
+* deny rm -rf, rm -r, and rmdir in CLI permissions ([ce1c2d6](https://github.com/chrisfentiman/dbx/commit/ce1c2d6129a446a1093f732beb6e6ee7dd29924c))
+
 ## [0.12.0](https://github.com/chrisfentiman/dbx/compare/v0.11.3...v0.12.0) (2026-03-25)
 
 
