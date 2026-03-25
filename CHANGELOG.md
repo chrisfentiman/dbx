@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.1](https://github.com/chrisfentiman/dbx/compare/v0.14.0...v0.14.1) (2026-03-25)
+
+
+### Bug Fixes
+
+* preserve comments in SQL formatter, skip keyword replacement inside comment blocks ([94bdc2a](https://github.com/chrisfentiman/dbx/commit/94bdc2a2463680f1d3dc31bf45599299b29a727b))
+
 ## [0.14.0](https://github.com/chrisfentiman/dbx/compare/v0.13.1...v0.14.0) (2026-03-25)
 
 
