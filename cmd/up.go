@@ -74,6 +74,9 @@ Checks for uv (Python) and pyright (LSP) and offers to install if missing.`,
 
 		fmt.Printf("\nDone. %d files written, %d skipped.\n", written, skipped)
 
+		// Ensure dbx CLI permissions in settings
+		ensurePermissions()
+
 		// Check for Python data analysis dependencies
 		checkPythonDeps()
 
@@ -171,23 +174,12 @@ func checkPythonLSP() {
 
 func ensureLSPConfig() {
 	settingsPath := ".claude/settings.local.json"
+	settings := readSettings(settingsPath)
 
-	// Read existing settings or start fresh
-	var settings map[string]interface{}
-	if data, err := os.ReadFile(settingsPath); err == nil {
-		if err := json.Unmarshal(data, &settings); err != nil {
-			settings = make(map[string]interface{})
-		}
-	} else {
-		settings = make(map[string]interface{})
-	}
-
-	// Check if LSP is already configured
 	if _, exists := settings["lspServers"]; exists {
 		return
 	}
 
-	// Add LSP config and ENABLE_LSP_TOOL env var
 	settings["lspServers"] = map[string]interface{}{
 		"python": map[string]interface{}{
 			"command":   "pyright-langserver",
@@ -199,7 +191,6 @@ func ensureLSPConfig() {
 		},
 	}
 
-	// Add env var to enable LSP tool
 	env, ok := settings["env"].(map[string]interface{})
 	if !ok {
 		env = make(map[string]interface{})
@@ -207,11 +198,126 @@ func ensureLSPConfig() {
 	env["ENABLE_LSP_TOOL"] = "1"
 	settings["env"] = env
 
-	// Write back
+	writeSettings(settingsPath, settings)
+	fmt.Println("  ✓ LSP config written to .claude/settings.local.json")
+}
+
+func ensurePermissions() {
+	settingsPath := ".claude/settings.local.json"
+
+	settings := readSettings(settingsPath)
+
+	// Allowed: data exploration and analysis commands
+	requiredAllow := []string{
+		"Bash(dbx query:*)",
+		"Bash(dbx query *)",
+		"Bash(dbx describe:*)",
+		"Bash(dbx describe *)",
+		"Bash(dbx sample:*)",
+		"Bash(dbx sample *)",
+		"Bash(dbx preview:*)",
+		"Bash(dbx preview *)",
+		"Bash(dbx tables:*)",
+		"Bash(dbx tables *)",
+		"Bash(dbx schemas:*)",
+		"Bash(dbx schemas *)",
+		"Bash(dbx catalogs:*)",
+		"Bash(dbx catalogs *)",
+		"Bash(dbx version:*)",
+		"Bash(dbx doctor:*)",
+		"Bash(python3:*)",
+		"Bash(python3 *)",
+		"Bash(uv run:*)",
+		"Bash(uv run *)",
+		"Bash(pip3 list:*)",
+		"Bash(pip3 install:*)",
+	}
+
+	// Denied: configuration and system commands the LLM should not run
+	requiredDeny := []string{
+		"Bash(dbx config:*)",
+		"Bash(dbx config *)",
+		"Bash(dbx config setup:*)",
+		"Bash(dbx config setup *)",
+		"Bash(dbx up:*)",
+		"Bash(dbx up *)",
+		"Bash(dbx up)",
+		"Bash(dbx update:*)",
+		"Bash(dbx update *)",
+		"Bash(dbx update)",
+	}
+
+	// Get existing permissions
+	perms, ok := settings["permissions"].(map[string]interface{})
+	if !ok {
+		perms = make(map[string]interface{})
+	}
+
+	allow, ok := perms["allow"].([]interface{})
+	if !ok {
+		allow = []interface{}{}
+	}
+
+	// Build sets of existing permissions
+	existingAllow := make(map[string]bool)
+	for _, p := range allow {
+		if s, ok := p.(string); ok {
+			existingAllow[s] = true
+		}
+	}
+
+	deny, _ := perms["deny"].([]interface{})
+	existingDeny := make(map[string]bool)
+	for _, p := range deny {
+		if s, ok := p.(string); ok {
+			existingDeny[s] = true
+		}
+	}
+
+	// Add missing allow permissions
+	changed := 0
+	for _, perm := range requiredAllow {
+		if !existingAllow[perm] {
+			allow = append(allow, perm)
+			changed++
+		}
+	}
+
+	// Add missing deny permissions
+	for _, perm := range requiredDeny {
+		if !existingDeny[perm] {
+			deny = append(deny, perm)
+			changed++
+		}
+	}
+
+	if changed == 0 {
+		return
+	}
+
+	perms["allow"] = allow
+	perms["deny"] = deny
+	settings["permissions"] = perms
+	writeSettings(settingsPath, settings)
+	fmt.Println("  ✓ CLI permissions configured in .claude/settings.local.json")
+}
+
+func readSettings(path string) map[string]interface{} {
+	var settings map[string]interface{}
+	if data, err := os.ReadFile(path); err == nil {
+		if err := json.Unmarshal(data, &settings); err != nil {
+			settings = make(map[string]interface{})
+		}
+	} else {
+		settings = make(map[string]interface{})
+	}
+	return settings
+}
+
+func writeSettings(path string, settings map[string]interface{}) {
 	os.MkdirAll(".claude", 0755)
 	data, _ := json.MarshalIndent(settings, "", "  ")
-	os.WriteFile(settingsPath, append(data, '\n'), 0644)
-	fmt.Println("  ✓ LSP config written to .claude/settings.local.json")
+	os.WriteFile(path, append(data, '\n'), 0644)
 }
 
 func fileExists(path string) bool {
