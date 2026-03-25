@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/chrisfentiman/dbx/compare/v0.6.0...v0.7.0) (2026-03-25)
+
+
+### Features
+
+* optimize CLAUDE.md and skills for reduced hallucination ([dbe5f12](https://github.com/chrisfentiman/dbx/commit/dbe5f1278a8988c094b8baa4559bd7a643610f92))
+
 ## [0.6.0](https://github.com/chrisfentiman/dbx/compare/v0.5.1...v0.6.0) (2026-03-25)
 
 
