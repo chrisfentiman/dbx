@@ -29,7 +29,7 @@ var rootCmd = &cobra.Command{
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		// Skip config loading for commands that manage their own setup.
 		switch cmd.Name() {
-		case "version", "help", "config", "validate", "setup", "add", "schema", "up":
+		case "version", "help", "config", "validate", "setup", "add", "schema", "up", "doctor":
 			return nil
 		}
 

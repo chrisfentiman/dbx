@@ -10,13 +10,44 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	queryOutputFile string
+	queryInputFile  string
+)
+
 var queryCmd = &cobra.Command{
 	Use:   `query "SQL"`,
 	Short: "Execute a read-only SQL query",
-	Args:  cobra.ExactArgs(1),
+	Long: `Execute a read-only SQL query against Databricks.
+
+Pass SQL directly as an argument:
+  dbx query "SELECT * FROM schema.table LIMIT 10"
+
+Or read SQL from a file:
+  dbx query -f query.sql
+
+Optionally write output to a file:
+  dbx query "SELECT ..." --format csv -o results.csv`,
+	Args: cobra.MaximumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx := cmd.Context()
-		sqlStr := args[0]
+
+		// Resolve SQL from args or file.
+		var sqlStr string
+		switch {
+		case queryInputFile != "" && len(args) > 0:
+			return fmt.Errorf("provide SQL as an argument or with -f, not both")
+		case queryInputFile != "":
+			data, err := os.ReadFile(queryInputFile)
+			if err != nil {
+				return fmt.Errorf("reading SQL file: %w", err)
+			}
+			sqlStr = string(data)
+		case len(args) == 1:
+			sqlStr = args[0]
+		default:
+			return fmt.Errorf("provide SQL as an argument or with -f <file>")
+		}
 
 		// Validate through SQL guard.
 		g := guard.New(Cfg.AllowedSchemas, Cfg.DefaultCatalog)
@@ -51,10 +82,23 @@ var queryCmd = &cobra.Command{
 			RowCount: result.RowCount,
 		}
 
-		return output.Write(os.Stdout, Format, data, headers, result.Rows)
+		// Resolve output destination.
+		w := os.Stdout
+		if queryOutputFile != "" {
+			f, err := os.Create(queryOutputFile)
+			if err != nil {
+				return fmt.Errorf("creating output file: %w", err)
+			}
+			defer f.Close()
+			w = f
+		}
+
+		return output.Write(w, Format, data, headers, result.Rows)
 	},
 }
 
 func init() {
+	queryCmd.Flags().StringVarP(&queryOutputFile, "output", "o", "", "write output to file")
+	queryCmd.Flags().StringVarP(&queryInputFile, "file", "f", "", "read SQL from file")
 	rootCmd.AddCommand(queryCmd)
 }
