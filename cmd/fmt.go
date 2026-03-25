@@ -42,47 +42,100 @@ var fmtCmd = &cobra.Command{
 
 var fmtInputFile string
 
+var sqlKeywords = []string{
+	"SELECT", "FROM", "WHERE", "AND", "OR", "NOT",
+	"JOIN", "INNER JOIN", "LEFT JOIN", "RIGHT JOIN", "FULL JOIN", "CROSS JOIN",
+	"LEFT OUTER JOIN", "RIGHT OUTER JOIN", "FULL OUTER JOIN",
+	"ON", "AS", "IN", "IS", "NULL", "NOT NULL",
+	"GROUP BY", "ORDER BY", "HAVING", "LIMIT", "OFFSET",
+	"UNION", "UNION ALL", "INTERSECT", "EXCEPT",
+	"CASE", "WHEN", "THEN", "ELSE", "END",
+	"DISTINCT", "ALL", "EXISTS",
+	"BETWEEN", "LIKE", "ILIKE",
+	"ASC", "DESC", "NULLS FIRST", "NULLS LAST",
+	"WITH", "RECURSIVE",
+	"TRUE", "FALSE",
+	"COUNT", "SUM", "AVG", "MIN", "MAX",
+	"COALESCE", "CAST", "ROUND",
+	"OVER", "PARTITION BY", "ROW_NUMBER", "RANK", "DENSE_RANK",
+}
+
+var sqlClauses = []string{
+	"SELECT ", "FROM ", "WHERE ", "GROUP BY ", "ORDER BY ",
+	"HAVING ", "LIMIT ", "INNER JOIN ", "LEFT JOIN ", "RIGHT JOIN ",
+	"FULL JOIN ", "CROSS JOIN ", "UNION ALL", "UNION ", "WITH ",
+}
+
 func formatSQL(sql string) string {
 	sql = strings.TrimSpace(sql)
 
-	keywords := []string{
-		"SELECT", "FROM", "WHERE", "AND", "OR", "NOT",
-		"JOIN", "INNER JOIN", "LEFT JOIN", "RIGHT JOIN", "FULL JOIN", "CROSS JOIN",
-		"LEFT OUTER JOIN", "RIGHT OUTER JOIN", "FULL OUTER JOIN",
-		"ON", "AS", "IN", "IS", "NULL", "NOT NULL",
-		"GROUP BY", "ORDER BY", "HAVING", "LIMIT", "OFFSET",
-		"UNION", "UNION ALL", "INTERSECT", "EXCEPT",
-		"CASE", "WHEN", "THEN", "ELSE", "END",
-		"DISTINCT", "ALL", "EXISTS",
-		"BETWEEN", "LIKE", "ILIKE",
-		"ASC", "DESC", "NULLS FIRST", "NULLS LAST",
-		"WITH", "RECURSIVE",
-		"TRUE", "FALSE",
-		"COUNT", "SUM", "AVG", "MIN", "MAX",
-		"COALESCE", "CAST", "ROUND",
-		"OVER", "PARTITION BY", "ROW_NUMBER", "RANK", "DENSE_RANK",
-	}
+	// Process line by line to preserve comments
+	lines := strings.Split(sql, "\n")
+	var result []string
+	inBlockComment := false
 
-	result := sql
-	for _, kw := range keywords {
-		result = replaceKeywordFmt(result, kw)
-	}
+	for _, line := range lines {
+		trimmed := strings.TrimSpace(line)
 
-	// Add newlines before major clauses
-	clauses := []string{
-		"SELECT ", "FROM ", "WHERE ", "GROUP BY ", "ORDER BY ",
-		"HAVING ", "LIMIT ", "INNER JOIN ", "LEFT JOIN ", "RIGHT JOIN ",
-		"FULL JOIN ", "CROSS JOIN ", "UNION ALL", "UNION ", "WITH ",
-	}
-
-	for _, clause := range clauses {
-		idx := strings.Index(strings.ToUpper(result), clause)
-		if idx > 0 {
-			result = result[:idx] + "\n" + strings.TrimLeft(result[idx:], " ")
+		// Track block comments
+		if inBlockComment {
+			if idx := strings.Index(line, "*/"); idx >= 0 {
+				inBlockComment = false
+				// Format the part after the block comment ends
+				after := line[idx+2:]
+				if strings.TrimSpace(after) != "" {
+					after = formatSQLFragment(after)
+				}
+				result = append(result, line[:idx+2]+after)
+			} else {
+				result = append(result, line)
+			}
+			continue
 		}
+
+		// Full line comment — preserve as-is
+		if strings.HasPrefix(trimmed, "--") {
+			result = append(result, line)
+			continue
+		}
+
+		// Block comment start
+		if strings.HasPrefix(trimmed, "/*") {
+			if idx := strings.Index(line, "*/"); idx >= 0 {
+				// Single-line block comment
+				after := line[idx+2:]
+				if strings.TrimSpace(after) != "" {
+					after = formatSQLFragment(after)
+				}
+				result = append(result, line[:idx+2]+after)
+			} else {
+				inBlockComment = true
+				result = append(result, line)
+			}
+			continue
+		}
+
+		// Line with inline comment — split, format code part only
+		if idx := strings.Index(line, "--"); idx >= 0 {
+			code := line[:idx]
+			comment := line[idx:]
+			result = append(result, formatSQLFragment(code)+comment)
+			continue
+		}
+
+		// Pure code line
+		result = append(result, formatSQLFragment(line))
 	}
 
-	return result
+	return strings.Join(result, "\n")
+}
+
+// formatSQLFragment formats a fragment of SQL (no comments)
+func formatSQLFragment(sql string) string {
+	for _, kw := range sqlKeywords {
+		sql = replaceKeywordFmt(sql, kw)
+	}
+	return sql
 }
 
 func replaceKeywordFmt(sql, keyword string) string {
