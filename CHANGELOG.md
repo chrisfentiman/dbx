@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.1](https://github.com/chrisfentiman/dbx/compare/v0.13.0...v0.13.1) (2026-03-25)
+
+
+### Bug Fixes
+
+* strip SQL comments (-- and /* */) before guard validation ([36165f5](https://github.com/chrisfentiman/dbx/commit/36165f535149f6dbbf7c9fac0a0d1665fc0bdafb))
+
 ## [0.13.0](https://github.com/chrisfentiman/dbx/compare/v0.12.2...v0.13.0) (2026-03-25)
 
 
