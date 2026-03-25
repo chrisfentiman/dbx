@@ -7,6 +7,10 @@ on:
       - "**.go"
       - "go.mod"
       - "go.sum"
+      - "CLAUDE.md"
+      - ".claude/**"
+      - ".env.example"
+      - "install.sh"
       - ".github/workflows/ci.yml"
   push:
     branches: [main]
@@ -14,6 +18,10 @@ on:
       - "**.go"
       - "go.mod"
       - "go.sum"
+      - "CLAUDE.md"
+      - ".claude/**"
+      - ".env.example"
+      - "install.sh"
 
 jobs:
   lint:
