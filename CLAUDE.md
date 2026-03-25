@@ -25,6 +25,10 @@ dbx tables <catalog.schema>            # List tables in a schema
 dbx schemas <catalog>                  # List allowed schemas
 dbx preview <catalog.schema.table>     # Describe + sample combined
 dbx doctor                             # Check config, connectivity, integrity
+dbx check "SELECT ..."                 # Validate SQL against guard + style
+dbx check -f query.sql                 # Validate a SQL file
+dbx fmt "SELECT ..."                   # Format SQL
+dbx fmt -f query.sql --fix             # Format a file in place
 ```
 
 Output formats: `--format json|csv|table` | Limit rows: `--limit N`

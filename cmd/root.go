@@ -43,11 +43,17 @@ Explore:
 Query:
   dbx query "SELECT ..."             Execute SQL
   dbx query -f query.sql             Execute SQL from file
-  dbx query "..." -o out.csv         Write results to file`,
+  dbx query "..." -o out.csv         Write results to file
+
+SQL Tools:
+  dbx check "SQL"                    Validate against guard + style
+  dbx check -f query.sql             Validate a file
+  dbx fmt "SQL"                      Format SQL
+  dbx fmt -f query.sql --fix         Format a file in place`,
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		// Skip config loading for commands that manage their own setup.
 		switch cmd.Name() {
-		case "version", "help", "config", "validate", "setup", "add", "schema", "up", "doctor", "update":
+		case "version", "help", "config", "validate", "setup", "add", "schema", "up", "doctor", "update", "fmt", "check":
 			return nil
 		}
 

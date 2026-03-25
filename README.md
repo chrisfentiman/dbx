@@ -49,6 +49,14 @@ dbx doctor            # verify everything works
 | `dbx query -f query.sql` | Execute SQL from a file |
 | `dbx query "SELECT ..." -o results.csv` | Write output to a file |
 
+### SQL Tools
+| Command | Description |
+|---|---|
+| `dbx check "SELECT ..."` | Validate against guard, formatting, and style |
+| `dbx check -f query.sql` | Validate a SQL file |
+| `dbx fmt "SELECT ..."` | Format SQL with consistent style |
+| `dbx fmt -f query.sql --fix` | Format a file in place |
+
 ### Flags
 `--format json|csv|table` · `--limit N` · `--catalog <name>` · `--timeout <duration>`
 
