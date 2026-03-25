@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/chrisfentiman/dbx/compare/v0.4.0...v0.5.0) (2026-03-25)
+
+
+### Features
+
+* add self-update and version check ([8ca2780](https://github.com/chrisfentiman/dbx/commit/8ca278063d41449cf4f07aa47eb23e116c824882))
+
 ## [0.4.0](https://github.com/chrisfentiman/dbx/compare/v0.3.0...v0.4.0) (2026-03-25)
 
 
