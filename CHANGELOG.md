@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.0](https://github.com/chrisfentiman/dbx/compare/v0.12.2...v0.13.0) (2026-03-25)
+
+
+### Features
+
+* auto-allow skills, WebSearch, and enable MCP servers in dbx up ([2f71e76](https://github.com/chrisfentiman/dbx/commit/2f71e76a093a806709439639c768c5175c491100))
+
 ## [0.12.2](https://github.com/chrisfentiman/dbx/compare/v0.12.1...v0.12.2) (2026-03-25)
 
 
