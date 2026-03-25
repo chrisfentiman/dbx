@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/chrisfentiman/dbx/compare/v0.5.1...v0.6.0) (2026-03-25)
+
+
+### Features
+
+* **doctor:** verify binary integrity against official release checksum ([c69adca](https://github.com/chrisfentiman/dbx/commit/c69adcaf5f9d5fdb73b62eae9fabda897e6ea802))
+
 ## [0.5.1](https://github.com/chrisfentiman/dbx/compare/v0.5.0...v0.5.1) (2026-03-25)
 
 
