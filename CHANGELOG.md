@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.2](https://github.com/chrisfentiman/dbx/compare/v0.12.1...v0.12.2) (2026-03-25)
+
+
+### Bug Fixes
+
+* deny rm, sudo, chmod, chown, kill, pkill in CLI permissions ([38dad1d](https://github.com/chrisfentiman/dbx/commit/38dad1d2169022480341e1bfa1ca0475b326afda))
+
 ## [0.12.1](https://github.com/chrisfentiman/dbx/compare/v0.12.0...v0.12.1) (2026-03-25)
 
 
