@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.0](https://github.com/chrisfentiman/dbx/compare/v0.13.1...v0.14.0) (2026-03-25)
+
+
+### Features
+
+* add dbx fmt and dbx check commands ([22f72ad](https://github.com/chrisfentiman/dbx/commit/22f72addc2a5f090be6eb1caa45577c1fb0fb400))
+
 ## [0.13.1](https://github.com/chrisfentiman/dbx/compare/v0.13.0...v0.13.1) (2026-03-25)
 
 
