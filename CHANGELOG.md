@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/chrisfentiman/dbx/compare/v0.5.0...v0.5.1) (2026-03-25)
+
+
+### Bug Fixes
+
+* **security:** harden SQL guard and update mechanism ([f223575](https://github.com/chrisfentiman/dbx/commit/f223575f3e20522f0660958eedf977f40287d198))
+
 ## [0.5.0](https://github.com/chrisfentiman/dbx/compare/v0.4.0...v0.5.0) (2026-03-25)
 
 
