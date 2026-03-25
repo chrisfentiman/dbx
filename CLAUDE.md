@@ -38,18 +38,16 @@ Use Python for work that SQL can't do or shouldn't do:
 - **File manipulation**: merging CSVs, reformatting output, building reports from multiple queries
 
 ### Python Rules
-- **Do not assume any packages are installed** — check with `pip3 list` or install inline with `pip3 install`
+- **Use `uv run` for scripts with dependencies** — declares deps inline, no global install pollution
 - **Use stdlib first** — `csv`, `json`, `collections`, `statistics` cover most needs without dependencies
 - **Read query output via CSV**: `dbx query "SELECT ..." --format csv -o /tmp/data.csv` then process in Python
 - **Keep scripts in workbench/** — not in the project root
 - **Prefer inline Python** (`python3 -c` or heredoc) for quick one-offs; write a `.py` file for anything over ~30 lines
 
-### Common Pattern
+### Pattern: stdlib only (no dependencies)
 ```bash
-# 1. Query data out
 dbx query "SELECT ..." --format csv -o /tmp/results.csv
 
-# 2. Process in Python
 python3 << 'EOF'
 import csv
 from collections import defaultdict
@@ -59,6 +57,27 @@ with open('/tmp/results.csv') as f:
     # ... analysis ...
 EOF
 ```
+
+### Pattern: with dependencies (via uv)
+```bash
+dbx query "SELECT ..." --format csv -o /tmp/results.csv
+
+uv run --script workbench/analyze.py
+```
+
+Where `workbench/analyze.py` declares its own dependencies:
+```python
+# /// script
+# requires-python = ">=3.11"
+# dependencies = ["pandas", "matplotlib"]
+# ///
+
+import pandas as pd
+df = pd.read_csv('/tmp/results.csv')
+# ... analysis ...
+```
+
+`uv` installs deps into a temporary venv automatically — nothing is installed globally.
 
 ## Constraints
 

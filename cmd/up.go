@@ -1,10 +1,13 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
 	"io/fs"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -30,7 +33,8 @@ Behavior:
   - Rules are inserted only if they don't already exist
   - CLAUDE.md is skipped if it exists (use --force to overwrite)
   - .env.example is skipped if it exists
-  - Never deletes existing files`,
+  - Never deletes existing files
+  - Checks for uv (Python package manager) and offers to install it`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if ScaffoldFS == nil {
 			return fmt.Errorf("scaffold files not available")
@@ -96,6 +100,9 @@ Behavior:
 
 		fmt.Printf("\nDone. %d files written, %d skipped.\n", written, skipped)
 
+		// Check for Python data analysis dependencies
+		checkPythonDeps()
+
 		if !fileExists(".env") {
 			fmt.Println("\nNext steps:")
 			fmt.Println("  1. cp .env.example .env")
@@ -105,6 +112,45 @@ Behavior:
 
 		return nil
 	},
+}
+
+func checkPythonDeps() {
+	// Check if uv is installed
+	if _, err := exec.LookPath("uv"); err == nil {
+		fmt.Println("\n✓ uv detected — Python scripts will use inline dependencies automatically")
+		return
+	}
+
+	// Check if uvx is installed (sometimes uv installs as uvx)
+	if _, err := exec.LookPath("uvx"); err == nil {
+		fmt.Println("\n✓ uvx detected — Python scripts will use inline dependencies automatically")
+		return
+	}
+
+	// uv not found — offer to install
+	fmt.Println("\n⚠ uv not found")
+	fmt.Println("  uv is a fast Python package manager that enables inline script dependencies.")
+	fmt.Println("  Without it, Python data analysis (pandas, matplotlib, etc.) requires manual setup.")
+	fmt.Print("\n  Install uv now? [Y/n] ")
+
+	reader := bufio.NewReader(os.Stdin)
+	answer, _ := reader.ReadString('\n')
+	answer = strings.TrimSpace(strings.ToLower(answer))
+
+	if answer == "" || answer == "y" || answer == "yes" {
+		fmt.Println("  Installing uv...")
+		installCmd := exec.Command("sh", "-c", "curl -LsSf https://astral.sh/uv/install.sh | sh")
+		installCmd.Stdout = os.Stdout
+		installCmd.Stderr = os.Stderr
+		if err := installCmd.Run(); err != nil {
+			fmt.Printf("  ✗ Failed to install uv: %v\n", err)
+			fmt.Println("  Install manually: https://docs.astral.sh/uv/getting-started/installation/")
+		} else {
+			fmt.Println("  ✓ uv installed")
+		}
+	} else {
+		fmt.Println("  Skipped. Install later: curl -LsSf https://astral.sh/uv/install.sh | sh")
+	}
 }
 
 type fileAction int
