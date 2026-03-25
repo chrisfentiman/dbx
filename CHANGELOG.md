@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0](https://github.com/chrisfentiman/dbx/compare/v0.9.0...v0.10.0) (2026-03-25)
+
+
+### Features
+
+* update Python rules with uv, PEP 723, and dependency management guidance ([f60e9f9](https://github.com/chrisfentiman/dbx/commit/f60e9f9f140a27d7cf3a81d7e6327a921b73500a))
+
 ## [0.9.0](https://github.com/chrisfentiman/dbx/compare/v0.8.0...v0.9.0) (2026-03-25)
 
 
