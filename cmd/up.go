@@ -18,21 +18,12 @@ var ScaffoldFS fs.FS
 
 var upCmd = &cobra.Command{
 	Use:   "up",
-	Short: "Scaffold the current directory with dbx skills, rules, and CLAUDE.md",
-	Long: `Sets up the current directory for use with dbx and Claude Code.
+	Short: "Set up current directory for dbx + Claude Code",
+	Long: `Scaffolds the current directory with Claude Code skills, rules, and config.
 
-Creates:
-  .claude/skills/dbx-*   — Claude Code skills for data exploration
-  .claude/rules/          — Code quality and style rules
-  CLAUDE.md               — Project instructions for Claude Code
-  .env.example            — Template for Databricks configuration
-
-Behavior:
-  - Skills (dbx-*) are always written (these are managed by dbx)
-  - Rules are inserted only if they don't already exist
-  - Files are only written if content has changed
-  - Never deletes existing files
-  - Checks for uv and pyright, offers to install if missing`,
+Writes .claude/skills/dbx-*, .claude/rules/*, CLAUDE.md, and .env.example.
+Only writes files whose content has changed — safe to run repeatedly.
+Checks for uv (Python) and pyright (LSP) and offers to install if missing.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if ScaffoldFS == nil {
 			return fmt.Errorf("scaffold files not available")

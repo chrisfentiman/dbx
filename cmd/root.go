@@ -25,7 +25,25 @@ var (
 
 var rootCmd = &cobra.Command{
 	Use:   "dbx",
-	Short: "Databricks data explorer CLI",
+	Short: "Read-only Databricks SQL CLI for safe data exploration",
+	Long: `dbx provides controlled, read-only SQL access to Databricks.
+
+Setup:
+  dbx up              Scaffold Claude Code skills in current directory
+  dbx config setup    Interactive Databricks connection setup
+  dbx doctor          Check config, connectivity, and binary integrity
+
+Explore:
+  dbx schemas <catalog>              List schemas
+  dbx tables <catalog.schema>        List tables
+  dbx describe <catalog.schema.tbl>  Show columns and types
+  dbx sample <catalog.schema.tbl>    Preview rows
+  dbx preview <catalog.schema.tbl>   Describe + sample
+
+Query:
+  dbx query "SELECT ..."             Execute SQL
+  dbx query -f query.sql             Execute SQL from file
+  dbx query "..." -o out.csv         Write results to file`,
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		// Skip config loading for commands that manage their own setup.
 		switch cmd.Name() {

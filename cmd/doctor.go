@@ -14,7 +14,7 @@ import (
 
 var doctorCmd = &cobra.Command{
 	Use:   "doctor",
-	Short: "Check configuration, connectivity, and binary integrity",
+	Short: "Verify config, connectivity, version, and binary integrity",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("dbx doctor")
 		fmt.Println(strings.Repeat("─", 40))
