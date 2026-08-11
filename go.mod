@@ -4,7 +4,7 @@ go 1.24.0
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
-	github.com/databricks/databricks-sdk-go v0.134.0
+	github.com/databricks/databricks-sdk-go v0.170.0
 	github.com/spf13/cobra v1.10.2
 	github.com/xwb1989/sqlparser v0.0.0-20180606152119-120387863bf2
 	gopkg.in/yaml.v3 v3.0.1
